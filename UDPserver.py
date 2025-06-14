@@ -87,4 +87,17 @@ class UDPServer:
                 
                 print()  # New line after progress stars
 
+                # Step 3: Send CLOSE message
+                close_msg = f"FILE {filename} CLOSE"
+                response = self.send_and_receive(close_msg, self.server_host, data_port)
                 
+                if response != f"FILE {filename} CLOSE_OK":
+                    print(f"Invalid close response: {response}")
+                    return False
+                    
+            print(f"Successfully downloaded {filename}")
+            return True
+            
+        except Exception as e:
+            print(f"Error downloading {filename}: {e}")
+            return False
