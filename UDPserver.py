@@ -58,3 +58,33 @@ class UDPServer:
             file_size = int(parts[3])
             data_port = int(parts[5])
             print(f"Downloading {filename} (size: {file_size} bytes)")
+
+            # Step 2: Download file in chunks
+            with open(filename, 'wb') as file:
+                bytes_received = 0
+                block_size = 1000  # bytes per chunk
+                
+                while bytes_received < file_size:
+                    start = bytes_received
+                    end = min(bytes_received + block_size - 1, file_size - 1)
+                    
+                    file_msg = f"FILE {filename} GET START {start} END {end}"
+                    response = self.send_and_receive(file_msg, self.server_host, data_port)
+                    
+                    resp_parts = response.split()
+                    if resp_parts[0] != "FILE" or resp_parts[1] != filename or resp_parts[2] != "OK":
+                        print(f"Invalid file response: {response}")
+                        return False
+                        
+                    data_start = response.find("DATA") + 5
+                    base64_data = response[data_start:]
+                    chunk = base64.b64decode(base64_data)
+                    file.seek(start)
+                    file.write(chunk)
+                    
+                    bytes_received += len(chunk)
+                    print("*", end='', flush=True)
+                
+                print()  # New line after progress stars
+
+                
