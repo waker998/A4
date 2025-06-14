@@ -45,3 +45,16 @@ class UDPServer:
             # Step 1: Send DOWNLOAD request
             download_msg = f"DOWNLOAD {filename}"
             response = self.send_and_receive(download_msg, self.server_host, self.server_port)    
+            parts = response.split()
+            if parts[0] == "ERR":
+                print(f"Error: {response}")
+                return False
+                
+            if parts[0] != "OK" or parts[1] != filename:
+                print(f"Invalid response: {response}")
+                return False
+                
+            # Parse response
+            file_size = int(parts[3])
+            data_port = int(parts[5])
+            print(f"Downloading {filename} (size: {file_size} bytes)")
