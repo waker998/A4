@@ -117,13 +117,9 @@ class UDPServer:
         finally:
             self.socket.close()
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: python3 UDPclient.py <hostname> <port> <file_list>")
+    if len(sys.argv) != 2:  
+        print("Usage: python3 UDPserver.py <port>")  
         sys.exit(1)
-    
-    hostname = sys.argv[1]
-    port = int(sys.argv[2])
-    file_list = sys.argv[3]
-    
-    client = UDPClient(hostname, port, file_list)
-    client.run()           
+    port = int(sys.argv[1])
+    server = UDPServer(port)
+    server.run()
