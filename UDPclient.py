@@ -94,6 +94,21 @@ class UDPClient:
         except Exception as e:
             print(f"Error downloading {filename}: {e}")
             return False
+    def run(self):
+        try:
+            with open(self.file_list, 'r') as f:
+                files = [line.strip() for line in f if line.strip()]
+                
+            for filename in files:
+                self.download_file(filename)
+                
+        except FileNotFoundError:
+            print(f"Error: File list '{self.file_list}' not found")
+        except Exception as e:
+            print(f"Error: {e}")
+        finally:
+            self.socket.close()
+
    
 
             
