@@ -3,6 +3,7 @@ import threading
 import random
 import os
 import base64
+import sys
 
 class UDPServer:
     def __init__(self, port):
@@ -101,3 +102,28 @@ class UDPServer:
         except Exception as e:
             print(f"Error downloading {filename}: {e}")
             return False
+    def run(self):
+        try:
+            with open(self.file_list, 'r') as f:
+                files = [line.strip() for line in f if line.strip()]
+                
+            for filename in files:
+                self.download_file(filename)
+                
+        except FileNotFoundError:
+            print(f"Error: File list '{self.file_list}' not found")
+        except Exception as e:
+            print(f"Error: {e}")
+        finally:
+            self.socket.close()
+if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        print("Usage: python3 UDPclient.py <hostname> <port> <file_list>")
+        sys.exit(1)
+    
+    hostname = sys.argv[1]
+    port = int(sys.argv[2])
+    file_list = sys.argv[3]
+    
+    client = UDPClient(hostname, port, file_list)
+    client.run()           
