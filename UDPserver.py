@@ -36,4 +36,12 @@ class UDPServer:
                 threading.Thread(target=self.handle_file_transmission, 
                                 args=(filename, client_address, data_port)).start()
             except Exception as e:
-                print(f"Error in main server loop: {e}")    
+                print(f"Error in main server loop: {e}")
+                break
+                
+        raise Exception("Max retries reached, giving up")
+    def download_file(self, filename):
+        try:
+            # Step 1: Send DOWNLOAD request
+            download_msg = f"DOWNLOAD {filename}"
+            response = self.send_and_receive(download_msg, self.server_host, self.server_port)    
